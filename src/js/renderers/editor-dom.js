@@ -108,14 +108,10 @@ function renderInlineCursorPlaceholder() {
 }
 
 function renderCard() {
-  let wrapper = document.createElement('div');
   let cardElement = document.createElement('div');
   cardElement.contentEditable = false;
   addClassName(cardElement, CARD_ELEMENT_CLASS_NAME);
-  wrapper.appendChild(renderInlineCursorPlaceholder());
-  wrapper.appendChild(cardElement);
-  wrapper.appendChild(renderInlineCursorPlaceholder());
-  return { wrapper, cardElement };
+  return cardElement;
 }
 
 /**
@@ -418,8 +414,8 @@ class Visitor {
 
     const card = this._findCard(section.name);
 
-    let { wrapper, cardElement } = renderCard();
-    renderNode.element = wrapper;
+    let cardElement = renderCard();
+    renderNode.element = cardElement;
     attachRenderNodeElementToDOM(renderNode, originalElement);
 
     const cardNode = new CardNode(
