@@ -609,17 +609,8 @@ var PostEditor = (function () {
       (0, _utilsAssert['default'])('Cards section must be split at offset 0 or 1', offset === 0 || offset === 1);
 
       var newSection = this.builder.createMarkupSection();
-      var nextSection = undefined;
-      var surroundingSections = undefined;
-
-      if (offset === 0) {
-        nextSection = cardSection;
-        surroundingSections = [newSection, cardSection];
-      } else {
-        nextSection = cardSection.next;
-        surroundingSections = [cardSection, newSection];
-      }
-
+      var nextSection = cardSection.next;
+      var surroundingSections = [cardSection, newSection];
       var collection = this.editor.post.sections;
       this.insertSectionBefore(collection, newSection, nextSection);
 

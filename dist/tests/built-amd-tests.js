@@ -6639,7 +6639,7 @@ QUnit.test('should pass ESLint', function(assert) {
 QUnit.module('ESLint | tests/eslint/js/renderers/editor-dom.js');
 QUnit.test('should pass ESLint', function(assert) {
   assert.expect(1);
-  assert.ok(true, 'tests/eslint/js/renderers/editor-dom.js should pass ESLint\n\n');
+  assert.ok(false, 'tests/eslint/js/renderers/editor-dom.js should pass ESLint\n\n110:10 - \'renderCard\' is defined but never used. (no-unused-vars)');
 });
 
 QUnit.module('ESLint | tests/eslint/js/renderers/mobiledoc/0-2.js');

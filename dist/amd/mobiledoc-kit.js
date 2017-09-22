@@ -4252,17 +4252,8 @@ define('mobiledoc-kit/editor/post', ['exports', 'mobiledoc-kit/utils/cursor/posi
         (0, _mobiledocKitUtilsAssert['default'])('Cards section must be split at offset 0 or 1', offset === 0 || offset === 1);
 
         var newSection = this.builder.createMarkupSection();
-        var nextSection = undefined;
-        var surroundingSections = undefined;
-
-        if (offset === 0) {
-          nextSection = cardSection;
-          surroundingSections = [newSection, cardSection];
-        } else {
-          nextSection = cardSection.next;
-          surroundingSections = [cardSection, newSection];
-        }
-
+        var nextSection = cardSection.next;
+        var surroundingSections = [cardSection, newSection];
         var collection = this.editor.post.sections;
         this.insertSectionBefore(collection, newSection, nextSection);
 
@@ -6695,7 +6686,7 @@ define('mobiledoc-kit/models/card-node', ['exports', 'mobiledoc-kit/utils/assert
           this._teardownCallback = null;
         }
         if (this._rendered) {
-          this.element.removeChild(this._rendered);
+          // this.element.removeChild(this._rendered);
           this._rendered = null;
         }
       }
@@ -6735,7 +6726,7 @@ define('mobiledoc-kit/models/card-node', ['exports', 'mobiledoc-kit/utils/assert
         var name = this.card.name;
 
         (0, _mobiledocKitUtilsAssert['default'])('Card "' + name + '" must render dom (render value was: "' + rendered + '")', !!rendered.nodeType);
-        this.element.appendChild(rendered);
+        // this.element.appendChild(rendered);
         this._rendered = rendered;
         this.didRender();
       }
@@ -6747,6 +6738,7 @@ define('mobiledoc-kit/models/card-node', ['exports', 'mobiledoc-kit/utils/assert
         return {
           name: this.card.name,
           isInEditor: true,
+          isActive: this.section.isActive,
           onTeardown: function onTeardown(callback) {
             return _this2._teardownCallback = callback;
           },
@@ -10210,15 +10202,18 @@ define('mobiledoc-kit/renderers/editor-dom', ['exports', 'mobiledoc-kit/models/c
 
         var card = this._findCard(section.name);
 
-        var cardElement = renderCard(section);
-        renderNode.element = cardElement;
-        attachRenderNodeElementToDOM(renderNode, originalElement);
-
-        var cardNode = new _mobiledocKitModelsCardNode['default'](editor, card, section, cardElement, options);
+        var cardNode = new _mobiledocKitModelsCardNode['default'](editor, card, section, null, options);
         renderNode.cardNode = cardNode;
 
         var initialMode = section._initialMode;
         cardNode[initialMode]();
+        renderNode.element = cardNode._rendered;
+        renderNode.element.contentEditable = false;
+        (0, _mobiledocKitUtilsDomUtils.addClassName)(renderNode.element, CARD_ELEMENT_CLASS_NAME);
+        if (section.isActive) {
+          (0, _mobiledocKitUtilsDomUtils.addClassName)(renderNode.element, '__mobiledoc-active');
+        }
+        attachRenderNodeElementToDOM(renderNode, originalElement);
       }
     }, {
       key: _mobiledocKitModelsTypes.ATOM_TYPE,

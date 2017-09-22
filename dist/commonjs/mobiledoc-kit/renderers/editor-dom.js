@@ -441,15 +441,18 @@ var Visitor = (function () {
 
       var card = this._findCard(section.name);
 
-      var cardElement = renderCard(section);
-      renderNode.element = cardElement;
-      attachRenderNodeElementToDOM(renderNode, originalElement);
-
-      var cardNode = new _modelsCardNode['default'](editor, card, section, cardElement, options);
+      var cardNode = new _modelsCardNode['default'](editor, card, section, null, options);
       renderNode.cardNode = cardNode;
 
       var initialMode = section._initialMode;
       cardNode[initialMode]();
+      renderNode.element = cardNode._rendered;
+      renderNode.element.contentEditable = false;
+      (0, _utilsDomUtils.addClassName)(renderNode.element, CARD_ELEMENT_CLASS_NAME);
+      if (section.isActive) {
+        (0, _utilsDomUtils.addClassName)(renderNode.element, '__mobiledoc-active');
+      }
+      attachRenderNodeElementToDOM(renderNode, originalElement);
     }
   }, {
     key: _modelsTypes.ATOM_TYPE,

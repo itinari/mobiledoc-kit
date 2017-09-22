@@ -53,7 +53,7 @@ var CardNode = (function () {
         this._teardownCallback = null;
       }
       if (this._rendered) {
-        this.element.removeChild(this._rendered);
+        // this.element.removeChild(this._rendered);
         this._rendered = null;
       }
     }
@@ -93,7 +93,7 @@ var CardNode = (function () {
       var name = this.card.name;
 
       (0, _utilsAssert['default'])('Card "' + name + '" must render dom (render value was: "' + rendered + '")', !!rendered.nodeType);
-      this.element.appendChild(rendered);
+      // this.element.appendChild(rendered);
       this._rendered = rendered;
       this.didRender();
     }
@@ -105,6 +105,7 @@ var CardNode = (function () {
       return {
         name: this.card.name,
         isInEditor: true,
+        isActive: this.section.isActive,
         onTeardown: function onTeardown(callback) {
           return _this2._teardownCallback = callback;
         },
