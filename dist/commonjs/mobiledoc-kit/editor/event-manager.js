@@ -233,12 +233,9 @@ var EventManager = (function () {
             var newRange = undefined;
             if (key.isShift()) {
               newRange = range.extend(key.direction * 1);
-            } else {
-              newRange = range.move(key.direction);
+              editor.selectRange(newRange);
+              event.preventDefault();
             }
-
-            editor.selectRange(newRange);
-            event.preventDefault();
             break;
           }
         case key.isDelete():

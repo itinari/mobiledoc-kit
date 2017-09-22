@@ -129,6 +129,11 @@ var Key = (function () {
       return this.keyCode === _keycodes['default'].UP || this.keyCode === _keycodes['default'].DOWN;
     }
   }, {
+    key: 'isVerticalArrowWithoutModifiers',
+    value: function isVerticalArrowWithoutModifiers() {
+      return this.isVerticalArrow() && !(this.ctrlKey || this.metaKey || this.altKey || this.shiftKey);
+    }
+  }, {
     key: 'isLeftArrow',
     value: function isLeftArrow() {
       return this.keyCode === _keycodes['default'].LEFT;
@@ -137,6 +142,16 @@ var Key = (function () {
     key: 'isRightArrow',
     value: function isRightArrow() {
       return this.keyCode === _keycodes['default'].RIGHT;
+    }
+  }, {
+    key: 'isUpArrow',
+    value: function isUpArrow() {
+      return this.keyCode === _keycodes['default'].UP;
+    }
+  }, {
+    key: 'isDownArrow',
+    value: function isDownArrow() {
+      return this.keyCode === _keycodes['default'].DOWN;
     }
   }, {
     key: 'isHome',

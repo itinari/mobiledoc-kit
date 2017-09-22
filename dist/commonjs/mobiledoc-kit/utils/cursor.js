@@ -81,11 +81,7 @@ var Cursor = (function () {
           offset = undefined;
       if (section.isCardSection) {
         offset = 0;
-        if (position.offset === 0) {
-          node = section.renderNode.element.firstChild;
-        } else {
-          node = section.renderNode.element.lastChild;
-        }
+        node = section.renderNode.element;
       } else if (section.isBlank) {
         node = section.renderNode.cursorElement;
         offset = 0;

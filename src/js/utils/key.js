@@ -112,12 +112,25 @@ const Key = class Key {
       this.keyCode === Keycodes.DOWN;
   }
 
+  isVerticalArrowWithoutModifiers() {
+    return this.isVerticalArrow() &&
+      !(this.ctrlKey || this.metaKey || this.altKey || this.shiftKey);
+  }
+
   isLeftArrow() {
     return this.keyCode === Keycodes.LEFT;
   }
 
   isRightArrow() {
     return this.keyCode === Keycodes.RIGHT;
+  }
+
+  isUpArrow() {
+    return this.keyCode === Keycodes.UP;
+  }
+
+  isDownArrow() {
+    return this.keyCode === Keycodes.DOWN;
   }
 
   isHome() {

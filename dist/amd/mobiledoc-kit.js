@@ -2835,9 +2835,41 @@ define('mobiledoc-kit/editor/editor', ['exports', 'mobiledoc-kit/views/tooltip',
         return this._editState.range;
       },
       set: function set(newRange) {
+        var prevActiveSections = this.activeSections;
         this._editState.updateRange(newRange);
+        var activeSections = this.activeSections;
 
         if (this._editState.rangeDidChange()) {
+          prevActiveSections = prevActiveSections.filter(function (section) {
+            return !activeSections.some(function (activeSection) {
+              return activeSection === section;
+            });
+          });
+
+          prevActiveSections.forEach(function (section) {
+            if (section.isCardSection && section.isActive) {
+              section.isActive = false;
+              section.renderNode.markDirty();
+            }
+          });
+
+          if (activeSections.length === 1) {
+            var section = activeSections[0];
+            if (section.isCardSection && !section.isActive) {
+              section.isActive = true;
+              section.renderNode.markDirty();
+            }
+          }
+
+          if (this._renderTree.isDirty) {
+            var currentRange = this.range;
+            this.hasRendered = true;
+            this.rerender();
+            if (currentRange) {
+              this.selectRange(currentRange);
+            }
+          }
+
           this._rangeDidChange();
         }
 
@@ -3091,12 +3123,9 @@ define('mobiledoc-kit/editor/event-manager', ['exports', 'mobiledoc-kit/utils/as
               var newRange = undefined;
               if (key.isShift()) {
                 newRange = range.extend(key.direction * 1);
-              } else {
-                newRange = range.move(key.direction);
+                editor.selectRange(newRange);
+                event.preventDefault();
               }
-
-              editor.selectRange(newRange);
-              event.preventDefault();
               break;
             }
           case key.isDelete():
@@ -3823,6 +3852,11 @@ define('mobiledoc-kit/editor/post', ['exports', 'mobiledoc-kit/utils/cursor/posi
           } else if (headSection.isBlank) {
             this.removeSection(headSection);
             nextPos = tailPos;
+          } else if (headSection.isCardSection) {
+            this.removeSection(headSection);
+            nextPos = tailPos;
+          } else if (headSection.isMarkerable && tailSection.isCardSection) {
+            this.removeSection(tailSection);
           }
         }
 
@@ -9855,10 +9889,13 @@ define('mobiledoc-kit/renderers/editor-dom', ['exports', 'mobiledoc-kit/models/c
     return document.createTextNode(ZWNJ);
   }
 
-  function renderCard() {
+  function renderCard(section) {
     var cardElement = document.createElement('div');
     cardElement.contentEditable = false;
     (0, _mobiledocKitUtilsDomUtils.addClassName)(cardElement, CARD_ELEMENT_CLASS_NAME);
+    if (section.isActive) {
+      (0, _mobiledocKitUtilsDomUtils.addClassName)(cardElement, '__mobiledoc-active');
+    }
     return cardElement;
   }
 
@@ -10173,7 +10210,7 @@ define('mobiledoc-kit/renderers/editor-dom', ['exports', 'mobiledoc-kit/models/c
 
         var card = this._findCard(section.name);
 
-        var cardElement = renderCard();
+        var cardElement = renderCard(section);
         renderNode.element = cardElement;
         attachRenderNodeElementToDOM(renderNode, originalElement);
 
@@ -11167,11 +11204,7 @@ define('mobiledoc-kit/utils/cursor', ['exports', 'mobiledoc-kit/utils/selection-
             offset = undefined;
         if (section.isCardSection) {
           offset = 0;
-          if (position.offset === 0) {
-            node = section.renderNode.element.firstChild;
-          } else {
-            node = section.renderNode.element.lastChild;
-          }
+          node = section.renderNode.element;
         } else if (section.isBlank) {
           node = section.renderNode.cursorElement;
           offset = 0;
@@ -12633,6 +12666,11 @@ define('mobiledoc-kit/utils/key', ['exports', 'mobiledoc-kit/utils/keycodes', 'm
         return this.keyCode === _mobiledocKitUtilsKeycodes['default'].UP || this.keyCode === _mobiledocKitUtilsKeycodes['default'].DOWN;
       }
     }, {
+      key: 'isVerticalArrowWithoutModifiers',
+      value: function isVerticalArrowWithoutModifiers() {
+        return this.isVerticalArrow() && !(this.ctrlKey || this.metaKey || this.altKey || this.shiftKey);
+      }
+    }, {
       key: 'isLeftArrow',
       value: function isLeftArrow() {
         return this.keyCode === _mobiledocKitUtilsKeycodes['default'].LEFT;
@@ -12641,6 +12679,16 @@ define('mobiledoc-kit/utils/key', ['exports', 'mobiledoc-kit/utils/keycodes', 'm
       key: 'isRightArrow',
       value: function isRightArrow() {
         return this.keyCode === _mobiledocKitUtilsKeycodes['default'].RIGHT;
+      }
+    }, {
+      key: 'isUpArrow',
+      value: function isUpArrow() {
+        return this.keyCode === _mobiledocKitUtilsKeycodes['default'].UP;
+      }
+    }, {
+      key: 'isDownArrow',
+      value: function isDownArrow() {
+        return this.keyCode === _mobiledocKitUtilsKeycodes['default'].DOWN;
       }
     }, {
       key: 'isHome',

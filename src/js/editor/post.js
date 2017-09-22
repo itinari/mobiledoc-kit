@@ -166,6 +166,11 @@ class PostEditor {
       } else if (headSection.isBlank) {
         this.removeSection(headSection);
         nextPos = tailPos;
+      } else if (headSection.isCardSection) {
+        this.removeSection(headSection);
+        nextPos = tailPos;
+      } else if (headSection.isMarkerable && tailSection.isCardSection) {
+        this.removeSection(tailSection);
       }
     }
 

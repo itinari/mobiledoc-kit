@@ -1383,9 +1383,41 @@ var Editor = (function () {
       return this._editState.range;
     },
     set: function set(newRange) {
+      var prevActiveSections = this.activeSections;
       this._editState.updateRange(newRange);
+      var activeSections = this.activeSections;
 
       if (this._editState.rangeDidChange()) {
+        prevActiveSections = prevActiveSections.filter(function (section) {
+          return !activeSections.some(function (activeSection) {
+            return activeSection === section;
+          });
+        });
+
+        prevActiveSections.forEach(function (section) {
+          if (section.isCardSection && section.isActive) {
+            section.isActive = false;
+            section.renderNode.markDirty();
+          }
+        });
+
+        if (activeSections.length === 1) {
+          var section = activeSections[0];
+          if (section.isCardSection && !section.isActive) {
+            section.isActive = true;
+            section.renderNode.markDirty();
+          }
+        }
+
+        if (this._renderTree.isDirty) {
+          var currentRange = this.range;
+          this.hasRendered = true;
+          this.rerender();
+          if (currentRange) {
+            this.selectRange(currentRange);
+          }
+        }
+
         this._rangeDidChange();
       }
 

@@ -407,9 +407,41 @@ class Editor {
   }
 
   set range(newRange) {
+    let prevActiveSections = this.activeSections;
     this._editState.updateRange(newRange);
+    const activeSections = this.activeSections;
 
     if (this._editState.rangeDidChange()) {
+      prevActiveSections = prevActiveSections.filter((section) => {
+        return !activeSections.some((activeSection) => {
+          return activeSection === section;
+        });
+      });
+
+      prevActiveSections.forEach((section) => {
+        if (section.isCardSection && section.isActive) {
+          section.isActive = false;
+          section.renderNode.markDirty();
+        }
+      });
+
+      if (activeSections.length === 1) {
+        const section = activeSections[0];
+        if (section.isCardSection && !section.isActive) {
+          section.isActive = true;
+          section.renderNode.markDirty();
+        }
+      }
+
+      if (this._renderTree.isDirty) {
+        const currentRange = this.range;
+        this.hasRendered = true;
+        this.rerender();
+        if (currentRange) {
+          this.selectRange(currentRange);
+        }
+      }
+
       this._rangeDidChange();
     }
 
