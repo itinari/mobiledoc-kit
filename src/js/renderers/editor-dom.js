@@ -417,16 +417,19 @@ class Visitor {
 
     const card = this._findCard(section.name);
 
-    let cardElement = renderCard(section);
-    renderNode.element = cardElement;
-    attachRenderNodeElementToDOM(renderNode, originalElement);
-
     const cardNode = new CardNode(
-      editor, card, section, cardElement, options);
+      editor, card, section, null, options);
     renderNode.cardNode = cardNode;
 
     const initialMode = section._initialMode;
     cardNode[initialMode]();
+    renderNode.element = cardNode._rendered;
+    renderNode.element.contentEditable = false;
+    addClassName(renderNode.element, CARD_ELEMENT_CLASS_NAME);
+    if (section.isActive) {
+      addClassName(renderNode.element, '__mobiledoc-active');
+    }
+    attachRenderNodeElementToDOM(renderNode, originalElement);
   }
 
   [ATOM_TYPE](renderNode, atomModel) {

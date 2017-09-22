@@ -512,17 +512,8 @@ class PostEditor {
            offset === 0 || offset === 1);
 
     let newSection = this.builder.createMarkupSection();
-    let nextSection;
-    let surroundingSections;
-
-    if (offset === 0) {
-      nextSection = cardSection;
-      surroundingSections = [newSection, cardSection];
-    } else {
-      nextSection = cardSection.next;
-      surroundingSections = [cardSection, newSection];
-    }
-
+    let nextSection = cardSection.next;
+    let surroundingSections = [cardSection, newSection];
     let collection = this.editor.post.sections;
     this.insertSectionBefore(collection, newSection, nextSection);
 

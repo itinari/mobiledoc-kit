@@ -41,7 +41,7 @@ export default class CardNode {
       this._teardownCallback = null;
     }
     if (this._rendered) {
-      this.element.removeChild(this._rendered);
+      // this.element.removeChild(this._rendered);
       this._rendered = null;
     }
   }
@@ -56,6 +56,7 @@ export default class CardNode {
     return {
       name: this.card.name,
       isInEditor: true,
+      isActive: this.section.isActive,
       onTeardown: (callback) => this._teardownCallback = callback,
       didRender: (callback) => this._didRenderCallback = callback,
       edit: () => this.edit(),
@@ -95,7 +96,7 @@ export default class CardNode {
       `Card "${name}" must render dom (render value was: "${rendered}")`,
       !!rendered.nodeType
     );
-    this.element.appendChild(rendered);
+    // this.element.appendChild(rendered);
     this._rendered = rendered;
     this.didRender();
   }
