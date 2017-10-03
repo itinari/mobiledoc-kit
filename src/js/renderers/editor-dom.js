@@ -107,16 +107,6 @@ function renderInlineCursorPlaceholder() {
   return document.createTextNode(ZWNJ);
 }
 
-function renderCard(section) {
-  let cardElement = document.createElement('div');
-  cardElement.contentEditable = false;
-  addClassName(cardElement, CARD_ELEMENT_CLASS_NAME);
-  if (section.isActive) {
-    addClassName(cardElement, '__mobiledoc-active');
-  }
-  return cardElement;
-}
-
 /**
  * Wrap the element in all of the opened markups
  * @return {DOMElement} the wrapped element
@@ -426,9 +416,6 @@ class Visitor {
     renderNode.element = cardNode._rendered;
     renderNode.element.contentEditable = false;
     addClassName(renderNode.element, CARD_ELEMENT_CLASS_NAME);
-    if (section.isActive) {
-      addClassName(renderNode.element, '__mobiledoc-active');
-    }
     attachRenderNodeElementToDOM(renderNode, originalElement);
   }
 
