@@ -10218,16 +10218,6 @@ define('mobiledoc-kit/renderers/editor-dom', ['exports', 'mobiledoc-kit/models/c
     return document.createTextNode(ZWNJ);
   }
 
-  function renderCard(section) {
-    var cardElement = document.createElement('div');
-    cardElement.contentEditable = false;
-    (0, _mobiledocKitUtilsDomUtils.addClassName)(cardElement, CARD_ELEMENT_CLASS_NAME);
-    if (section.isActive) {
-      (0, _mobiledocKitUtilsDomUtils.addClassName)(cardElement, '__mobiledoc-active');
-    }
-    return cardElement;
-  }
-
   /**
    * Wrap the element in all of the opened markups
    * @return {DOMElement} the wrapped element
@@ -10547,9 +10537,6 @@ define('mobiledoc-kit/renderers/editor-dom', ['exports', 'mobiledoc-kit/models/c
         renderNode.element = cardNode._rendered;
         renderNode.element.contentEditable = false;
         (0, _mobiledocKitUtilsDomUtils.addClassName)(renderNode.element, CARD_ELEMENT_CLASS_NAME);
-        if (section.isActive) {
-          (0, _mobiledocKitUtilsDomUtils.addClassName)(renderNode.element, '__mobiledoc-active');
-        }
         attachRenderNodeElementToDOM(renderNode, originalElement);
       }
     }, {
@@ -12607,6 +12594,9 @@ define('mobiledoc-kit/utils/dom-utils', ['exports', 'mobiledoc-kit/utils/array-u
    *  @private
    */
   function containsNode(parentNode, childNode) {
+    if (!parentNode || !childNode) {
+      return false;
+    }
     if (parentNode === childNode) {
       return true;
     }

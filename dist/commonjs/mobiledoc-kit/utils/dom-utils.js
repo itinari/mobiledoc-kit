@@ -66,6 +66,9 @@ function clearChildNodes(element) {
  *  @private
  */
 function containsNode(parentNode, childNode) {
+  if (!parentNode || !childNode) {
+    return false;
+  }
   if (parentNode === childNode) {
     return true;
   }

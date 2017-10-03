@@ -120,16 +120,6 @@ function renderInlineCursorPlaceholder() {
   return document.createTextNode(ZWNJ);
 }
 
-function renderCard(section) {
-  var cardElement = document.createElement('div');
-  cardElement.contentEditable = false;
-  (0, _utilsDomUtils.addClassName)(cardElement, CARD_ELEMENT_CLASS_NAME);
-  if (section.isActive) {
-    (0, _utilsDomUtils.addClassName)(cardElement, '__mobiledoc-active');
-  }
-  return cardElement;
-}
-
 /**
  * Wrap the element in all of the opened markups
  * @return {DOMElement} the wrapped element
@@ -449,9 +439,6 @@ var Visitor = (function () {
       renderNode.element = cardNode._rendered;
       renderNode.element.contentEditable = false;
       (0, _utilsDomUtils.addClassName)(renderNode.element, CARD_ELEMENT_CLASS_NAME);
-      if (section.isActive) {
-        (0, _utilsDomUtils.addClassName)(renderNode.element, '__mobiledoc-active');
-      }
       attachRenderNodeElementToDOM(renderNode, originalElement);
     }
   }, {
